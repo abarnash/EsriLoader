@@ -76,7 +76,7 @@ function(
 
 
     //*** Public methods ***
-    o.serviceJson = function(url){
+    o.getServiceJson = function(url){
         //Returns the JSON representation at an endpoint
         var deferred = new Deferred();
         var layersRequest = esri.request({
@@ -95,6 +95,7 @@ function(
 
         return deferred;
     }
+
 
     o.esriRequest = function(url,content){
         //Wrapper around esri.request call
@@ -115,6 +116,13 @@ function(
         });
 
         return deferred;
+    }
+
+
+    o.getMapServiceLegend = function(url){
+        //Returns legend JSON of MapService
+        var legend_url = [url,'legend'].join('/');
+        return esriRequest(legend_url, {f:'json'});
     }
 
     o.queryForStats = function(url, params, statdefs){
