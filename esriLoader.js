@@ -1,40 +1,18 @@
 define([
     "dojo/Deferred",
-    "esri/tasks/QueryTask", 
-    "esri/tasks/query", 
-    "esri/tasks/IdentifyTask", 
-    "esri/tasks/IdentifyParameters",
-    "esri/tasks/ImageServiceIdentifyTask",
-    "esri/tasks/ImageServiceIdentifyParameters", 
-    "esri/tasks/StatisticDefinition",
+    // "esri/tasks/ImageServiceIdentifyTask", 
+    // "esri/tasks/ImageServiceIdentifyParameters", 
     "esri/request",
-    "esri/tasks/PrintTask", 
-    "esri/tasks/PrintParameters",
-    "esri/tasks/PrintTemplate",
-    "esri/tasks/AreasAndLengthsParameters", 
     "esri/tasks/GeometryService",
-    "esri/SpatialReference",
-    "esri/tasks/ProjectParameters",
-    "esri/tasks/BufferParameters"
+    "esri/SpatialReference"
 ], 
 function(
     Deferred,
-    QueryTask, 
-    Query, 
-    IdentifyTask, 
-    IdentifyParameters,
-    ImageServiceIdentifyTask, 
-    ImageServiceIdentifyParameters, 
-    StatisticDefinition, 
+    // ImageServiceIdentifyTask, 
+    // ImageServiceIdentifyParameters, 
     esriRequest,
-    PrintTask, 
-    PrintParameters, 
-    PrintTemplate,
-    AreasAndLengthsParameters, 
     GeometryService,
-    SpatialReference,
-    ProjectParameters,
-    BufferParameters
+    SpatialReference
 ) {
 
     var o = {};
@@ -128,6 +106,8 @@ function(
     o.queryForStats = function(url, params, statdefs){
         //Create StatisticDefinition object for a query,
         //then query layer
+        var StatisticDefinition = require("esri/tasks/StatisticDefinition");
+
         var deferred = new Deferred();
         var statDefArray = statdefs.map(function(def){
             return obj_to_esriParams(new StatisticDefinition(),def);
@@ -139,6 +119,9 @@ function(
 
     o.identify = function(url,params,option){
         //Identify an esri mapserver endpoint url with params in JSON format
+        var IdentifyTask = require("esri/tasks/IdentifyTask");
+        var IdentifyParameters = require("esri/tasks/IdentifyParameters");
+
         var identifyTask = new IdentifyTask(url);
         var identifyParams = obj_to_esriParams(new IdentifyParameters(), params);
 
@@ -150,6 +133,9 @@ function(
 
     o.queryEsri = function(url, params) {
         //Query an esri endpoint url with query params in JSON format
+        var QueryTask = require("esri/tasks/QueryTask");
+        var query = require( "esri/tasks/query");
+
         var queryTask = new QueryTask(url);
         var query = obj_to_esriParams(new Query(), params);
         var deferred = execute_task(queryTask,query);
@@ -157,6 +143,7 @@ function(
     };
 
     o.getQuery = function(params) {
+        var query = require( "esri/tasks/query");
         return obj_to_esriParams(new Query(), params);
     }
 
@@ -203,6 +190,10 @@ function(
     o.exportMapImage = function(map, printUrl, width, height){
         //Sends request to export a map image only to a Print Service
         //Given a map object, url to print service and width/height
+        var PrintTask = require("esri/tasks/PrintTask"); 
+        var PrintParameters = require("esri/tasks/PrintParameters");
+        var PrintTemplate = requrie("esri/tasks/PrintTemplate");
+
         var deferred = new Deferred();
           var template = new PrintTemplate();
           template.exportOptions = {
@@ -230,6 +221,7 @@ function(
 
     o.geometry.getAreasLengths = function(url,params){
         //Request Areas and Lengths at geometry service url with params
+        var AreasAndLengthsParameters = require("esri/tasks/AreasAndLengthsParameters")
         var deferred = new Deferred();
         params = getGeometryUnits(params);
         var al_params = obj_to_esriParams(new AreasAndLengthsParameters(),params);
@@ -240,6 +232,7 @@ function(
 
     o.geometry.project = function(url,params,outWkid){
         //Request project at geometry service url with params and outWkid spatial reference
+        var ProjectParameters = require("esri/tasks/ProjectParameters");
 
         var deferred = new Deferred();
         params.outSR = new SpatialReference(outWkid)
@@ -251,6 +244,7 @@ function(
 
     o.geometry.buffer = function(url,params,wkid){
         //Request project at geometry url with params and outWkid spatial reference
+        var BufferParameters = require("esri/tasks/BufferParameters");
 
         var deferred = new Deferred();
         var bufferParams = obj_to_esriParams(new BufferParameters(),params);
